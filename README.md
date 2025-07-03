@@ -63,11 +63,23 @@ uv run src/time_tracker.py
 
 ## Configuration
 
+### Initial Setup
+```bash
+# Copy the example configuration
+cp config/config.example.yaml config/config.yaml
+
+# Edit with your personal settings
+$EDITOR config/config.yaml
+```
+
+### What to Configure
+
 Edit `config/config.yaml` to customize:
 
-- **Repositories**: Add/remove GitHub and local repositories to track
-- **Services**: Enable/disable tracking services
+- **Repositories**: Add your GitHub repos and local repository paths
+- **Services**: Enable/disable tracking services (Claude, Cursor, etc.)
 - **Analysis Settings**: Adjust time windows and merging thresholds
+- **Calendar**: Set your email for meeting filtering
 - **Output**: Configure report formats and output directory
 
 ### Example configuration:
@@ -76,14 +88,19 @@ repositories:
   github:
     - your-username/your-repo
   local:
-    my_project: /path/to/my_project
+    my_project: ~/projects/my_project
 
 services:
   claude:
     enabled: true
   cursor:
     enabled: true
+
+calendar:
+  owner_email: your.email@example.com
 ```
+
+**Note**: Your personal `config.yaml` is gitignored and won't be committed.
 
 ## Advanced Usage
 

@@ -28,8 +28,11 @@ wheels/
 data/
 *.csv
 *.json
-!config/*.yaml
 !data/.gitkeep
+
+# Configuration
+config/config.yaml
+!config/config.example.yaml
 
 # IDE
 .vscode/

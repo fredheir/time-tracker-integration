@@ -1,0 +1,126 @@
+# Time Tracker Integration Configuration
+# Copy this file to config.yaml and customize with your settings
+
+# Repository sources to track
+repositories:
+  github:
+    # Add your GitHub repositories here
+    # Format: username/repository
+    - your-username/your-repo-1
+    - your-username/your-repo-2
+  
+  local:
+    # Map friendly names to local repository paths
+    # project_name: /path/to/local/repo
+    my_project: ~/projects/my_project
+    another_project: ~/work/another_project
+
+# Time tracking services
+services:
+  claude:
+    enabled: true
+    data_path: ~/.claude/projects
+    
+  cursor:
+    enabled: true
+    data_path: ~/.config/Cursor/User/globalStorage/state.vscdb
+    
+  git:
+    enabled: true
+    # Duration to assign to each commit (in minutes)
+    # Note: This is for visualization only - commits are point-in-time events
+    commit_duration_minutes: 5
+    
+    # GitHub event tracking options
+    track_commits: true  # Track git commits (default: true)
+    track_actions: true  # Track GitHub Actions workflow runs
+    track_issues: true   # Track issue creation and comments
+    track_pull_requests: true  # Track PR creation, merges, and reviews
+    
+    # Duration settings for different GitHub events (in minutes)
+    action_duration_minutes: 10  # Default duration for GitHub Actions
+    issue_creation_duration_minutes: 15  # Duration for issue creation
+    issue_comment_duration_minutes: 5   # Duration for issue comments
+    pr_creation_duration_minutes: 20    # Duration for PR creation
+    pr_merge_duration_minutes: 10       # Duration for PR merges
+    pr_review_duration_minutes: 15      # Duration for PR reviews
+    
+  # Add more services here as needed
+  # vscode:
+  #   enabled: false
+  #   data_path: ~/.config/Code/User/globalStorage/state.vscdb
+
+# Analysis settings
+analysis:
+  # Time window for matching commits with coding sessions
+  commit_window_hours_before: 2
+  commit_window_hours_after: 12
+  
+  # Activity block size in minutes (for Claude)
+  block_size_minutes: 10
+  
+  # Merge consecutive blocks if within this many minutes
+  merge_threshold_minutes: 10
+
+# Output settings
+output:
+  # Directory for generated reports and data files
+  data_directory: ./data
+  
+  # Report formats
+  generate_csv: true
+  generate_json: true
+  generate_markdown: true
+
+# Date range settings (optional, can be overridden via CLI)
+date_range:
+  # start: "2025-06-19"
+  # end: "2025-06-23"
+
+# Calendar integration settings
+calendar:
+  enabled: true
+  
+  # Your email for filtering (meetings without this person are shown)
+  owner_email: your.email@example.com
+  
+  # Meeting display preferences
+  display:
+    # Show meetings in ASCII heatmap
+    show_in_ascii: true
+    
+    # Show meetings in web dashboard
+    show_in_web: true
+    
+    # Meeting colors for web dashboard (purple theme by default)
+    colors:
+      light: "#f3e5ff"
+      medium_light: "#d4b5ff"
+      medium: "#b794f6"
+      medium_dark: "#9f7aea"
+      dark: "#805ad5"
+  
+  # Meeting filtering options
+  filtering:
+    # Exclude meetings with these keywords in the title
+    exclude_keywords:
+      - block
+      - busy
+      - "focus time"
+      - "work time"
+      - "deep work"
+      - "no meetings"
+      - hold
+      - tentative
+    
+    # Only include meetings with external attendees
+    require_external_attendees: true
+    
+    # Exclude meetings marked as free/transparent
+    exclude_free_time: true
+    
+    # Exclude declined meetings
+    exclude_declined: true
+    
+    # Minimum attendee count (set to 2 to exclude 1:1s with self)
+    minimum_attendees: 2
