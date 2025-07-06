@@ -115,7 +115,8 @@ def generate_ascii_heatmap(csv_file=None, include_meetings=None):
     print("\n" + "=" * 80)
     print("CODING ACTIVITY HEATMAP (15-minute blocks)")
     print("=" * 80)
-    legend = "\nIntensity: . (none) ░ (light) ▒ (medium) ▓ (heavy) █ (intense)"
+    legend = "\nIntensity: . ∙ (none) ░ (light) ▒ (medium) ▓ (heavy) █ (intense)"
+    legend += "\nHours:     . (even hours) ∙ (odd hours) - alternating background for hour boundaries"
     if include_meetings and meetings_map:
         legend += "\nMeetings:  ◊ (light) ◈ (medium) ◆ (heavy) ♦ (full)"
     print(legend)
@@ -154,8 +155,10 @@ def generate_ascii_heatmap(csv_file=None, include_meetings=None):
                         char = '♦'
                 else:
                     # Convert coding intensity to character
+                    # Use alternating background characters for hour boundaries
                     if intensity == 0:
-                        char = '.'
+                        # Alternate empty character based on hour (even/odd)
+                        char = '.' if hour % 2 == 0 else '∙'
                     elif intensity < 0.25:
                         char = '░'
                     elif intensity < 0.5:

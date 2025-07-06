@@ -383,6 +383,23 @@ def generate_static_dashboard(csv_file=None):
         .heatmap-block.intensity-2 { background: #40c463; }
         .heatmap-block.intensity-3 { background: #30a14e; }
         .heatmap-block.intensity-4 { background: #216e39; }
+        
+        /* Alternating hour backgrounds - simple and clean */
+        .heatmap-block.even-hour.intensity-0 { background: #f5f5f5; }
+        .heatmap-block.odd-hour.intensity-0 { background: #e8e8e8; }
+        
+        /* Subtle alternating pattern for active blocks */
+        .heatmap-block.odd-hour:not(.intensity-0) {
+            filter: brightness(0.95);
+        }
+        
+        /* Hour start indicators - left accent line */
+        .heatmap-block.hour-start {
+            box-shadow: inset 2px 0 0 0 #666;
+        }
+        .heatmap-block.hour-start.intensity-0 {
+            box-shadow: inset 2px 0 0 0 #999;
+        }
         /* Meeting blocks with different colors */
         .heatmap-block.meeting-0 { background: ''' + config.get('calendar', {}).get('display', {}).get('colors', {}).get('light', '#f3e5ff') + '''; }
         .heatmap-block.meeting-1 { background: ''' + config.get('calendar', {}).get('display', {}).get('colors', {}).get('medium_light', '#d4b5ff') + '''; }
@@ -790,11 +807,12 @@ def generate_static_dashboard(csv_file=None):
             const startDate = new Date(dates[0]);
             const endDate = new Date(dates[dates.length - 1]);
             
-            // Generate hour headers
+            // Generate hour headers (starting from 4AM)
             const hoursHtml = '<div class="heatmap-hours">' + 
-                Array.from({length: 24}, (_, i) => 
-                    i % 3 === 0 ? `<div class="heatmap-hour">${i}</div>` : '<div class="heatmap-hour"></div>'
-                ).join('') + '</div>';
+                Array.from({length: 24}, (_, i) => {
+                    const displayHour = (i + 4) % 24;
+                    return i % 3 === 0 ? `<div class="heatmap-hour">${displayHour}</div>` : '<div class="heatmap-hour"></div>';
+                }).join('') + '</div>';
             
             // Generate heatmap rows
             let heatmapHtml = hoursHtml;
@@ -808,7 +826,8 @@ def generate_static_dashboard(csv_file=None):
                     <div class="heatmap-label">${dayLabel}</div>
                     <div class="heatmap-blocks">`;
                 
-                for (let hour = 0; hour < 24; hour++) {
+                for (let i = 0; i < 24; i++) {
+                    const hour = (i + 4) % 24; // Start from 4AM
                     for (let minute = 0; minute < 60; minute += 15) {
                         const blockKey = `${dateStr}-${hour}-${minute}`;
                         const intensity = intensityMap[blockKey] || 0;
@@ -821,6 +840,12 @@ def generate_static_dashboard(csv_file=None):
                         } else {
                             const intensityLevel = intensity === 0 ? 0 : Math.min(Math.ceil(intensity / 2), 4);
                             blockClass = `intensity-${intensityLevel}`;
+                            // Add alternating hour class for visual distinction (based on display position)
+                            blockClass += i % 2 === 0 ? ' even-hour' : ' odd-hour';
+                            // Add hour-start marker for the first block of each hour
+                            if (minute === 0) {
+                                blockClass += ' hour-start';
+                            }
                         }
                         
                         // Build detailed tooltip
