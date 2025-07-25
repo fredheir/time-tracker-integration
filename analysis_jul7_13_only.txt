@@ -1,0 +1,291 @@
+
+Extracting claude sessions...
+Found 865 Claude JSONL files
+Found 123 claude sessions
+
+Extracting cursorrealtime sessions...
+Found 27 Cursor databases to analyze
+Found activity: 2025-07-23 21:13:07.620351+00:00 for Unknown
+Found backup activity: 2025-07-20 20:21:11.071861+00:00 for Unknown
+Found activity: 2025-06-29 16:04:00.994936+00:00 for ai_augmentation
+Found activity: 2025-07-14 13:19:04.557778+00:00 for ai_augmentation
+Found backup activity: 2025-07-11 08:32:56.829762+00:00 for ai_augmentation
+Found activity: 2025-07-09 08:38:11.337897+00:00 for political_template
+Found backup activity: 2025-07-11 08:32:56.830762+00:00 for political_template
+Found activity: 2025-07-09 06:41:49.831585+00:00 for Unknown
+Found backup activity: 2025-07-11 08:32:56.829445+00:00 for Unknown
+Found activity: 2025-07-16 14:48:10.556924+00:00 for ai_augmentation
+Found backup activity: 2025-07-16 14:50:33.022660+00:00 for ai_augmentation
+Found activity: 2025-07-23 21:13:07.618351+00:00 for political_template
+Found backup activity: 2025-07-20 20:21:11.067861+00:00 for political_template
+Found general activity: 2025-07-23 21:13:07.620351+00:00
+Found general activity: 2025-07-20 20:21:11.071861+00:00
+Found general activity: 2025-07-20 20:21:11.049561+00:00
+Found general activity: 2025-07-23 09:17:59.590979+00:00
+Total activities found: 17
+Activities after deduplication: 9
+Created session: 2025-06-29 15:04:00.994936+00:00 - 2025-06-29 16:04:00.994936+00:00 for ai_augmentation
+Created session: 2025-07-09 05:41:49.831585+00:00 - 2025-07-09 06:41:49.831585+00:00 for Unknown
+Created session: 2025-07-09 07:38:11.337897+00:00 - 2025-07-09 08:38:11.337897+00:00 for political_template
+Created session: 2025-07-11 07:32:56.829445+00:00 - 2025-07-11 08:32:56.829445+00:00 for Unknown
+Created session: 2025-07-14 12:19:04.557778+00:00 - 2025-07-14 13:19:04.557778+00:00 for ai_augmentation
+Created session: 2025-07-16 13:48:10.556924+00:00 - 2025-07-16 14:48:10.556924+00:00 for ai_augmentation
+Created session: 2025-07-20 19:21:11.049561+00:00 - 2025-07-20 20:21:11.049561+00:00 for Unknown
+Created session: 2025-07-23 08:17:59.590979+00:00 - 2025-07-23 09:17:59.590979+00:00 for Unknown
+Created session: 2025-07-23 20:13:07.618351+00:00 - 2025-07-23 21:13:07.618351+00:00 for political_template
+Final sessions: 9
+  2025-06-29 15:04:00.994936+00:00 - 2025-06-29 16:04:00.994936+00:00: ai_augmentation
+  2025-07-09 05:41:49.831585+00:00 - 2025-07-09 06:41:49.831585+00:00: Unknown
+  2025-07-09 07:38:11.337897+00:00 - 2025-07-09 08:38:11.337897+00:00: political_template
+  2025-07-11 07:32:56.829445+00:00 - 2025-07-11 08:32:56.829445+00:00: Unknown
+  2025-07-14 12:19:04.557778+00:00 - 2025-07-14 13:19:04.557778+00:00: ai_augmentation
+  2025-07-16 13:48:10.556924+00:00 - 2025-07-16 14:48:10.556924+00:00: ai_augmentation
+  2025-07-20 19:21:11.049561+00:00 - 2025-07-20 20:21:11.049561+00:00: Unknown
+  2025-07-23 08:17:59.590979+00:00 - 2025-07-23 09:17:59.590979+00:00: Unknown
+  2025-07-23 20:13:07.618351+00:00 - 2025-07-23 21:13:07.618351+00:00: political_template
+Found 3 cursorrealtime sessions
+
+Extracting git sessions...
+Found 42 git sessions
+
+Fetching Git commits...
+Found 42 commits
+
+================================================================================
+TIME TRACKING INTEGRATION REPORT
+From: 2025-07-07 | To: 2025-07-13
+================================================================================
+
+=== SUMMARY BY REPOSITORY ===
+
+ai_augmentation:
+  Total Time: 29.7 hours
+  Sessions: 114
+  Services: Claude, Cursor, Git
+  Related Commits: 13
+
+augmentation:
+  Total Time: 11.0 hours
+  Sessions: 13
+  Services: Claude
+
+political_template:
+  Total Time: 7.6 hours
+  Sessions: 32
+  Services: Claude, Git
+  Related Commits: 16
+
+analysis:
+  Total Time: 1.5 hours
+  Sessions: 8
+  Services: Claude
+
+Downloads:
+  Total Time: 0.7 hours
+  Sessions: 1
+  Services: Claude
+
+=== SUMMARY BY SERVICE ===
+
+Claude:
+  Total Time: 44.0 hours
+  Sessions: 123.0
+
+Cursor:
+  Total Time: 3.0 hours
+  Sessions: 3.0
+
+Git:
+  Total Time: 3.5 hours
+  Sessions: 42.0
+
+=== DAILY BREAKDOWN ===
+
+Friday, July 11, 2025:
+  Total: 6.0 hours
+  06:20 - 07:00 [Claude] ai_augmentation
+  07:00 - 07:10 [Claude] ai_augmentation
+  07:00 - 07:10 [Claude] ai_augmentation
+  07:00 - 07:10 [Claude] ai_augmentation
+  07:10 - 07:30 [Claude] ai_augmentation
+  07:20 - 07:30 [Claude] ai_augmentation
+  07:30 - 08:00 [Claude] ai_augmentation
+  07:32 - 08:32 [Cursor] ai_augmentation
+  09:37 - 09:42 [Git] ai_augmentation
+  09:37 - 09:42 [Git] ai_augmentation
+  07:50 - 08:10 [Claude] ai_augmentation
+  08:10 - 10:00 [Claude] ai_augmentation
+  11:00 - 11:30 [Claude] augmentation
+
+Thursday, July 10, 2025:
+  Total: 8.0 hours
+  07:50 - 08:30 [Claude] augmentation
+  08:30 - 08:40 [Claude] analysis
+  08:30 - 08:40 [Claude] augmentation
+  08:40 - 08:50 [Claude] analysis
+  08:40 - 08:50 [Claude] augmentation
+  08:50 - 09:00 [Claude] analysis
+  08:50 - 09:00 [Claude] augmentation
+  09:00 - 09:10 [Claude] analysis
+  09:00 - 09:10 [Claude] augmentation
+  09:10 - 09:20 [Claude] analysis
+  09:10 - 09:20 [Claude] augmentation
+  09:20 - 09:40 [Claude] analysis
+  09:40 - 11:20 [Claude] augmentation
+  11:20 - 11:30 [Claude] analysis
+  11:20 - 11:30 [Claude] augmentation
+  11:30 - 11:40 [Claude] analysis
+  11:30 - 12:50 [Claude] augmentation
+  15:50 - 17:20 [Claude] augmentation
+  21:10 - 21:30 [Claude] ai_augmentation
+
+Wednesday, July 09, 2025:
+  Total: 16.3 hours
+  05:40 - 05:50 [Claude] ai_augmentation
+  05:41 - 06:41 [Cursor] ai_augmentation
+  06:30 - 06:40 [Claude] ai_augmentation
+  06:40 - 06:50 [Claude] ai_augmentation
+  06:40 - 06:50 [Claude] ai_augmentation
+  06:40 - 06:50 [Claude] ai_augmentation
+  06:50 - 07:00 [Claude] ai_augmentation
+  06:50 - 07:00 [Claude] ai_augmentation
+  06:50 - 07:00 [Claude] ai_augmentation
+  07:00 - 07:10 [Claude] ai_augmentation
+  07:10 - 07:20 [Claude] ai_augmentation
+  07:10 - 07:20 [Claude] ai_augmentation
+  09:11 - 09:16 [Git] ai_augmentation
+  09:12 - 09:17 [Git] ai_augmentation
+  09:12 - 09:17 [Git] ai_augmentation
+  07:20 - 07:30 [Claude] ai_augmentation
+  07:20 - 07:30 [Claude] ai_augmentation
+  07:30 - 07:40 [Claude] ai_augmentation
+  07:30 - 07:40 [Claude] ai_augmentation
+  07:38 - 08:38 [Cursor] ai_augmentation
+  08:20 - 08:40 [Claude] ai_augmentation
+  10:27 - 10:32 [Git] ai_augmentation
+  10:29 - 10:34 [Git] ai_augmentation
+  08:30 - 08:40 [Claude] ai_augmentation
+  08:30 - 08:40 [Claude] ai_augmentation
+  10:34 - 10:39 [Git] ai_augmentation
+  10:39 - 10:44 [Git] ai_augmentation
+  08:40 - 08:50 [Claude] ai_augmentation
+  09:10 - 10:00 [Claude] ai_augmentation
+  09:50 - 10:00 [Claude] ai_augmentation
+  09:50 - 10:00 [Claude] ai_augmentation
+  10:00 - 10:10 [Claude] ai_augmentation
+  10:00 - 10:10 [Claude] ai_augmentation
+  10:00 - 10:10 [Claude] ai_augmentation
+  10:10 - 13:40 [Claude] ai_augmentation
+  14:43 - 14:48 [Git] ai_augmentation
+  14:43 - 14:48 [Git] ai_augmentation
+  14:43 - 14:48 [Git] ai_augmentation
+  14:00 - 14:40 [Claude] ai_augmentation
+  19:40 - 23:10 [Claude] augmentation
+  23:50 - 00:40 [Claude] augmentation
+
+Tuesday, July 08, 2025:
+  Total: 5.6 hours
+  04:29 - 04:34 [Git] ai_augmentation
+  09:25 - 09:30 [Git] ai_augmentation
+  07:30 - 07:40 [Claude] ai_augmentation
+  07:30 - 07:40 [Claude] ai_augmentation
+  09:33 - 09:38 [Git] ai_augmentation
+  07:40 - 07:50 [Claude] ai_augmentation
+  08:40 - 09:10 [Claude] ai_augmentation
+  09:10 - 09:20 [Claude] ai_augmentation
+  09:10 - 09:20 [Claude] ai_augmentation
+  09:20 - 09:30 [Claude] ai_augmentation
+  09:20 - 09:30 [Claude] ai_augmentation
+  09:30 - 09:40 [Claude] ai_augmentation
+  09:30 - 09:40 [Claude] ai_augmentation
+  09:40 - 09:50 [Claude] ai_augmentation
+  09:40 - 10:10 [Claude] ai_augmentation
+  10:10 - 10:20 [Claude] ai_augmentation
+  10:10 - 10:40 [Claude] ai_augmentation
+  12:12 - 12:17 [Git] ai_augmentation
+  10:40 - 10:50 [Claude] ai_augmentation
+  10:40 - 11:10 [Claude] ai_augmentation
+  12:46 - 12:51 [Git] ai_augmentation
+  18:10 - 18:50 [Claude] Downloads
+  21:00 - 21:20 [Claude] ai_augmentation
+  21:50 - 22:00 [Claude] ai_augmentation
+
+Monday, July 07, 2025:
+  Total: 14.2 hours
+  06:00 - 06:10 [Claude] ai_augmentation
+  06:10 - 06:20 [Claude] ai_augmentation
+  06:10 - 06:20 [Claude] ai_augmentation
+  06:10 - 06:20 [Claude] ai_augmentation
+  06:20 - 06:30 [Claude] ai_augmentation
+  06:20 - 06:30 [Claude] ai_augmentation
+  06:20 - 06:30 [Claude] ai_augmentation
+  06:30 - 06:40 [Claude] ai_augmentation
+  06:30 - 06:40 [Claude] ai_augmentation
+  06:30 - 06:50 [Claude] ai_augmentation
+  08:32 - 08:37 [Git] ai_augmentation
+  06:48 - 06:53 [Git] ai_augmentation
+  06:50 - 07:00 [Claude] ai_augmentation
+  06:50 - 07:00 [Claude] ai_augmentation
+  06:50 - 07:10 [Claude] ai_augmentation
+  09:48 - 09:53 [Git] ai_augmentation
+  09:48 - 09:53 [Git] ai_augmentation
+  09:52 - 09:57 [Git] ai_augmentation
+  09:54 - 09:59 [Git] ai_augmentation
+  08:00 - 08:10 [Claude] ai_augmentation
+  08:00 - 08:10 [Claude] ai_augmentation
+  08:10 - 08:20 [Claude] ai_augmentation
+  08:10 - 08:20 [Claude] ai_augmentation
+  08:10 - 08:20 [Claude] ai_augmentation
+  10:13 - 10:18 [Git] ai_augmentation
+  08:20 - 08:30 [Claude] ai_augmentation
+  08:20 - 08:30 [Claude] ai_augmentation
+  08:30 - 08:40 [Claude] ai_augmentation
+  08:30 - 08:50 [Claude] ai_augmentation
+  08:50 - 10:20 [Claude] ai_augmentation
+  14:30 - 15:00 [Claude] political_template
+  15:40 - 17:10 [Claude] political_template
+  19:20 - 19:30 [Claude] political_template
+  19:20 - 19:40 [Claude] political_template
+  19:29 - 19:34 [Git] political_template
+  19:40 - 19:50 [Claude] political_template
+  19:40 - 20:00 [Claude] political_template
+  21:48 - 21:53 [Git] political_template
+  21:53 - 21:58 [Git] political_template
+  20:00 - 20:10 [Claude] political_template
+  20:00 - 20:10 [Claude] political_template
+  22:07 - 22:12 [Git] political_template
+  22:07 - 22:12 [Git] political_template
+  22:08 - 22:13 [Git] political_template
+  20:10 - 20:20 [Claude] political_template
+  20:10 - 20:20 [Claude] political_template
+  20:20 - 20:30 [Claude] political_template
+  20:20 - 20:30 [Claude] political_template
+  20:20 - 20:30 [Claude] political_template
+  20:30 - 20:40 [Claude] political_template
+  20:30 - 20:40 [Claude] political_template
+  20:30 - 20:40 [Claude] political_template
+  20:40 - 20:50 [Claude] political_template
+  20:40 - 20:50 [Claude] political_template
+  20:50 - 21:00 [Claude] political_template
+  21:10 - 21:20 [Claude] political_template
+  21:20 - 21:30 [Claude] political_template
+  21:20 - 21:30 [Claude] political_template
+  23:21 - 23:26 [Git] political_template
+  23:21 - 23:26 [Git] political_template
+  23:22 - 23:27 [Git] political_template
+  21:30 - 22:40 [Claude] political_template
+  22:12 - 22:17 [Git] ai_augmentation
+  00:33 - 00:38 [Git] ai_augmentation
+  00:43 - 00:48 [Git] ai_augmentation
+  22:50 - 22:55 [Git] ai_augmentation
+
+Sunday, July 06, 2025:
+  Total: 0.4 hours
+  23:24 - 23:29 [Git] ai_augmentation
+  23:24 - 23:29 [Git] ai_augmentation
+  23:25 - 23:30 [Git] ai_augmentation
+  23:26 - 23:31 [Git] ai_augmentation
+  21:43 - 21:48 [Git] ai_augmentation
+
+Saved CSV to: data/time_tracking_20250725_162317.csv
+Saved JSON to: data/time_tracking_20250725_162317.json
