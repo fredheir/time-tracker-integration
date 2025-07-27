@@ -108,7 +108,8 @@ def extract_work_context(record):
         'tool_use': tool_use,
         'tool_names': tool_names,
         'text_content': clean_text,
-        'content_length': len(text_content)
+        'content_length': len(text_content),
+        'raw_content': content  # Keep raw content for deeper analysis
     }
 
 
@@ -176,15 +177,194 @@ def analyze_work_session(records):
                 
         total_tokens += record['input_tokens'] + record['output_tokens']
     
-    return {
+    # Extract structured data using the new methods
+    files_modified = extract_file_changes(records)
+    code_blocks = extract_code_blocks(records)
+    commands_run = extract_bash_commands(records)
+    errors_encountered = extract_errors(records)
+    
+    session_data = {
         'user_requests': user_requests,
         'assistant_responses': assistant_responses,
         'technical_work': technical_work,
         'file_modifications': file_modifications,
         'tools_used': dict(tools_used),
         'total_tokens': total_tokens,
-        'interaction_count': len(records)
+        'interaction_count': len(records),
+        # New structured data
+        'files_modified': files_modified,
+        'code_blocks': code_blocks,
+        'commands_run': commands_run,
+        'errors_encountered': errors_encountered
     }
+    
+    # Infer deliverables from all the extracted data
+    session_data['deliverables'] = infer_deliverables(session_data)
+    
+    return session_data
+
+
+def extract_file_changes(session_records):
+    """Extract file modifications from session records"""
+    file_changes = []
+    
+    for record in session_records:
+        if record['role'] == 'assistant' and record['raw_content']:
+            content = record['raw_content']
+            
+            # Look for Edit/Write/MultiEdit tool usage
+            if isinstance(content, list):
+                for item in content:
+                    if isinstance(item, dict) and item.get('type') == 'tool_use':
+                        tool_name = item.get('name', '')
+                        if tool_name in ['Edit', 'Write', 'MultiEdit']:
+                            params = item.get('input', {})
+                            file_changes.append({
+                                'timestamp': record['timestamp'],
+                                'tool': tool_name,
+                                'file_path': params.get('file_path', 'unknown'),
+                                'action': 'modified' if tool_name == 'Edit' else 'created',
+                                'details': params
+                            })
+            
+            # Also look for file mentions in text
+            text = record['text_content']
+            file_patterns = re.findall(r'(?:created?|modified?|updated?|wrote|edit(?:ed)?)\s+(?:file\s+)?([/\w\-_\.]+\.\w+)', text, re.IGNORECASE)
+            for file_path in file_patterns:
+                if file_path not in [fc['file_path'] for fc in file_changes]:
+                    file_changes.append({
+                        'timestamp': record['timestamp'],
+                        'tool': 'mentioned',
+                        'file_path': file_path,
+                        'action': 'referenced',
+                        'details': {}
+                    })
+    
+    return file_changes
+
+
+def extract_code_blocks(session_records):
+    """Extract code blocks from session records"""
+    code_blocks = []
+    
+    for record in session_records:
+        if record['text_content']:
+            # Extract markdown code blocks
+            code_pattern = r'```(\w*)\n(.*?)```'
+            matches = re.findall(code_pattern, record['text_content'], re.DOTALL)
+            
+            for lang, code in matches:
+                if code.strip():
+                    code_blocks.append({
+                        'timestamp': record['timestamp'],
+                        'language': lang or 'unknown',
+                        'code': code.strip()[:500],  # First 500 chars
+                        'full_code': code.strip(),
+                        'role': record['role']
+                    })
+    
+    return code_blocks
+
+
+def extract_bash_commands(session_records):
+    """Extract bash commands executed during the session"""
+    commands = []
+    
+    for record in session_records:
+        if record['tool_names'] and 'Bash' in record['tool_names']:
+            # Extract from tool use
+            if isinstance(record['raw_content'], list):
+                for item in record['raw_content']:
+                    if isinstance(item, dict) and item.get('name') == 'Bash':
+                        params = item.get('input', {})
+                        commands.append({
+                            'timestamp': record['timestamp'],
+                            'command': params.get('command', 'unknown'),
+                            'description': params.get('description', ''),
+                            'timeout': params.get('timeout', 120000)
+                        })
+    
+    return commands
+
+
+def extract_errors(session_records):
+    """Extract errors and issues encountered during the session"""
+    errors = []
+    
+    error_patterns = [
+        r'(?:error|exception|traceback|failed?):\s*(.+)',
+        r'(?:command not found|permission denied|no such file)',
+        r'(?:TypeError|ValueError|AttributeError|KeyError|ImportError)',
+        r'(?:SyntaxError|IndentationError|NameError)',
+        r'(?:ConnectionError|TimeoutError|HTTPError)'
+    ]
+    
+    for record in session_records:
+        text = record['text_content'].lower()
+        
+        for pattern in error_patterns:
+            matches = re.findall(pattern, text, re.IGNORECASE | re.MULTILINE)
+            for match in matches:
+                errors.append({
+                    'timestamp': record['timestamp'],
+                    'error': match if isinstance(match, str) else match[0],
+                    'context': text[:200],
+                    'role': record['role']
+                })
+    
+    return errors
+
+
+def infer_deliverables(session_data):
+    """Infer concrete deliverables from session data"""
+    deliverables = []
+    
+    # Files created/modified
+    for fc in session_data.get('files_modified', []):
+        if fc['action'] in ['created', 'modified']:
+            deliverables.append({
+                'type': 'file',
+                'name': fc['file_path'],
+                'action': fc['action']
+            })
+    
+    # Features implemented (from technical work)
+    feature_patterns = [
+        r'(?:implemented?|created?|added?|built)\s+(?:new\s+)?(\w+\s+\w+)',
+        r'(?:feature|functionality|module|component):\s*([^\.]+)',
+        r'PR\s*#?(\d+)',
+        r'(?:pull request|merge request)\s+(?:created|opened|submitted)'
+    ]
+    
+    tech_work = session_data.get('technical_work', [])
+    for work in tech_work:
+        text = work.get('work', '')
+        for pattern in feature_patterns:
+            matches = re.findall(pattern, text, re.IGNORECASE)
+            for match in matches:
+                deliverables.append({
+                    'type': 'feature',
+                    'name': match if isinstance(match, str) else match[0],
+                    'action': 'implemented'
+                })
+    
+    # Commands that suggest deliverables
+    for cmd in session_data.get('commands_run', []):
+        command = cmd.get('command', '')
+        if 'git commit' in command:
+            deliverables.append({
+                'type': 'commit',
+                'name': cmd.get('description', 'Code commit'),
+                'action': 'committed'
+            })
+        elif 'git push' in command or 'gh pr create' in command:
+            deliverables.append({
+                'type': 'pr',
+                'name': cmd.get('description', 'Pull request'),
+                'action': 'created'
+            })
+    
+    return deliverables
 
 
 def extract_daily_work_summary(jsonl_file, target_date='2025-07-24'):
@@ -297,6 +477,29 @@ def main():
                     timestamp = mod['timestamp'][:19] if mod['timestamp'] else 'Unknown'
                     tools = f" (Tools: {', '.join(mod['tools'])})" if mod['tools'] else ""
                     print(f"  {i}. [{timestamp}] {mod['modification']}{tools}")
+            
+            # Display new structured data
+            if session.get('files_modified'):
+                print(f"\nFiles Changed ({len(session['files_modified'])}):")
+                for i, fc in enumerate(session['files_modified'][:5], 1):
+                    print(f"  {i}. {fc['action']}: {fc['file_path']} (via {fc['tool']})")
+            
+            if session.get('commands_run'):
+                print(f"\nCommands Executed ({len(session['commands_run'])}):")
+                for i, cmd in enumerate(session['commands_run'][:5], 1):
+                    print(f"  {i}. {cmd['command'][:80]}{'...' if len(cmd['command']) > 80 else ''}")
+                    if cmd['description']:
+                        print(f"     → {cmd['description']}")
+            
+            if session.get('errors_encountered'):
+                print(f"\nErrors Encountered ({len(session['errors_encountered'])}):")
+                for i, err in enumerate(session['errors_encountered'][:3], 1):
+                    print(f"  {i}. {err['error'][:100]}{'...' if len(err['error']) > 100 else ''}")
+            
+            if session.get('deliverables'):
+                print(f"\nDeliverables ({len(session['deliverables'])}):")
+                for i, dlv in enumerate(session['deliverables'][:5], 1):
+                    print(f"  {i}. [{dlv['type']}] {dlv['action']}: {dlv['name']}")
             
             print("-" * 40)
 
