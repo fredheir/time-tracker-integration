@@ -40,6 +40,10 @@ class GitAnalyzer:
     def find_repository_for_session(self, session_time: datetime, 
                                    commits_df: pd.DataFrame) -> Tuple[Optional[str], int]:
         """Find which repository was likely being worked on during a session"""
+        # Return None if no commits data available
+        if commits_df.empty or 'timestamp' not in commits_df.columns:
+            return None, 0
+            
         window_before = self.config['analysis']['commit_window_hours_before']
         window_after = self.config['analysis']['commit_window_hours_after']
         

@@ -55,13 +55,16 @@ class ClaudeExtractor(BaseExtractor):
                 start_date = pd.Timestamp(start_date).tz_localize('UTC')
             df = df[df['timestamp'] >= start_date]
         if end_date:
-            # Convert to UTC for comparison
+            # Convert to UTC for comparison and add 1 day to include the entire end date
             if end_date.tzinfo is None:
-                end_date = pd.Timestamp(end_date).tz_localize('UTC')
-            df = df[df['timestamp'] <= end_date]
+                end_date = pd.Timestamp(end_date).tz_localize('UTC') + pd.Timedelta(days=1)
+            else:
+                end_date = end_date + pd.Timedelta(days=1)
+            df = df[df['timestamp'] < end_date]
             
         # Create activity blocks
         blocks = self._create_activity_blocks(df)
+        
         
         # Convert blocks to sessions
         sessions = []
@@ -104,9 +107,9 @@ class ClaudeExtractor(BaseExtractor):
                             if project_name.startswith('-home-'):
                                 # Extract the last meaningful part of the path
                                 parts = project_name.split('-')
-                                if 'ai_augmentation' in project_name:
+                                if 'ai' in project_name and 'augmentation' in project_name:
                                     project_name = 'ai_augmentation'
-                                elif 'political_template' in project_name or 'political-template' in project_name:
+                                elif 'political' in project_name and 'template' in project_name:
                                     project_name = 'political_template'
                                 else:
                                     # Take the last non-empty part

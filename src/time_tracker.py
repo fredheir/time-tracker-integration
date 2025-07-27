@@ -123,7 +123,11 @@ class TimeTracker:
         })
         
         for _, row in df.iterrows():
-            repo = row['identified_repo'] or 'Unknown'
+            # Use project field for Claude sessions, identified_repo for others
+            if row['service'] == 'Claude':
+                repo = row['project'] or 'Unknown'
+            else:
+                repo = row['identified_repo'] or row['project'] or 'Unknown'
             repo_stats[repo]['total_hours'] += row['duration_hours']
             repo_stats[repo]['sessions'] += 1
             repo_stats[repo]['services'].add(row['service'])
@@ -179,7 +183,11 @@ class TimeTracker:
             for _, session in day_data.iterrows():
                 start = pd.to_datetime(session['start'])
                 end = pd.to_datetime(session['end'])
-                repo = session['identified_repo'] or 'Unknown'
+                # Use project field for Claude sessions, identified_repo for others
+                if session['service'] == 'Claude':
+                    repo = session['project'] or 'Unknown'
+                else:
+                    repo = session['identified_repo'] or session['project'] or 'Unknown'
                 
                 print(f"  {start.strftime('%H:%M')} - {end.strftime('%H:%M')} "
                       f"[{session['service']}] {repo}")

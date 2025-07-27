@@ -60,18 +60,29 @@ def generate_static_dashboard(csv_file=None):
     # Prepare data for JavaScript
     timeline_data = []
     for _, row in df.iterrows():
+        # Use project field for Claude sessions, identified_repo for others
+        if row.get('service') == 'Claude':
+            repo = row.get('project', 'Unknown')
+        else:
+            repo = row.get('identified_repo', row.get('project', 'Unknown'))
+            
         timeline_data.append({
             'start': row['start'].isoformat(),
             'end': row['end'].isoformat(),
-            'repo': row.get('identified_repo', 'Unknown'),
+            'repo': repo,
             'service': row.get('service', 'Unknown'),
             'project': row.get('project', 'Unknown'),
             'duration': round(row.get('duration_hours', 0), 2),
             'commits': int(row.get('commits_in_window', 0))
         })
     
+    # Add corrected repo column for grouping
+    df['corrected_repo'] = df.apply(lambda row: 
+        row['project'] if row['service'] == 'Claude' 
+        else (row.get('identified_repo') or row.get('project', 'Unknown')), axis=1)
+    
     # Daily data grouped by repo for stacked bar chart
-    daily_repo_data = df.groupby([df['start'].dt.date.astype(str), 'identified_repo'])['duration_hours'].sum().unstack(fill_value=0)
+    daily_repo_data = df.groupby([df['start'].dt.date.astype(str), 'corrected_repo'])['duration_hours'].sum().unstack(fill_value=0)
     
     # Prepare repo colors
     repo_colors = {
@@ -85,7 +96,7 @@ def generate_static_dashboard(csv_file=None):
     }
     
     # Get all unique repos
-    all_repos = df['identified_repo'].unique().tolist()
+    all_repos = df['corrected_repo'].unique().tolist()
     for repo in all_repos:
         if repo not in repo_colors:
             repo_colors[repo] = f'hsl({hash(repo) % 360}, 70%, 50%)'
@@ -93,10 +104,10 @@ def generate_static_dashboard(csv_file=None):
     # Calculate statistics
     total_hours = df['duration_hours'].sum()
     total_sessions = len(df)
-    repos = df['identified_repo'].nunique()
+    repos = df['corrected_repo'].nunique()
     
     # Repository summary
-    repo_summary = df.groupby('identified_repo').agg({
+    repo_summary = df.groupby('corrected_repo').agg({
         'duration_hours': 'sum',
         'service': 'count',
         'commits_in_window': 'max'

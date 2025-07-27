@@ -116,6 +116,8 @@ def analyze_work_session(records):
     """Analyze a session to understand what work was done"""
     user_requests = []
     assistant_responses = []
+    technical_work = []
+    file_modifications = []
     tools_used = Counter()
     total_tokens = 0
     
@@ -123,11 +125,50 @@ def analyze_work_session(records):
         if record['role'] == 'user' and record['type'] == 'user':
             # Filter out command outputs and focus on actual user requests
             text = record['text_content']
-            if not any(skip in text.lower() for skip in ['<command-', 'git status', 'git diff', 'running…']):
-                user_requests.append(text[:200])  # First 200 chars
+            # More specific filtering to get actual user questions/requests
+            if (text and len(text.strip()) > 10 and 
+                not any(skip in text.lower() for skip in [
+                    '<command-', 'git status', 'git diff', 'running…', 
+                    '<local-command-', 'caveat: the messages below',
+                    '<system-reminder>'
+                ])):
+                user_requests.append({
+                    'timestamp': record['timestamp'],
+                    'text': text[:500],  # Increase to 500 chars for more context
+                    'full_text': text  # Keep full text for detailed analysis
+                })
         
         elif record['role'] == 'assistant':
-            assistant_responses.append(record['text_content'][:200])
+            text = record['text_content']
+            assistant_responses.append({
+                'timestamp': record['timestamp'],
+                'text': text[:500],
+                'full_text': text,
+                'tools': record['tool_names']
+            })
+            
+            # Extract technical work mentions
+            if any(keyword in text.lower() for keyword in [
+                'implement', 'create', 'modify', 'fix', 'update', 'add',
+                'file', 'function', 'class', 'method', 'variable',
+                'telegram', 'monitoring', 'feature', 'bug', 'issue'
+            ]):
+                technical_work.append({
+                    'timestamp': record['timestamp'],
+                    'work': text[:300],
+                    'tools': record['tool_names']
+                })
+            
+            # Extract file modification mentions
+            if any(pattern in text.lower() for pattern in [
+                '.py', '.js', '.ts', '.md', '.json', '.yaml', '.yml',
+                'edit', 'write', 'create file', 'modify file'
+            ]):
+                file_modifications.append({
+                    'timestamp': record['timestamp'],
+                    'modification': text[:400],
+                    'tools': record['tool_names']
+                })
             
         if record['tool_names']:
             for tool in record['tool_names']:
@@ -138,6 +179,8 @@ def analyze_work_session(records):
     return {
         'user_requests': user_requests,
         'assistant_responses': assistant_responses,
+        'technical_work': technical_work,
+        'file_modifications': file_modifications,
         'tools_used': dict(tools_used),
         'total_tokens': total_tokens,
         'interaction_count': len(records)
@@ -236,14 +279,25 @@ def main():
             print(f"Tools: {', '.join(session['tools_used'].keys()) if session['tools_used'] else 'None'}")
             
             if session['user_requests']:
-                print("Key Requests:")
-                for i, req in enumerate(session['user_requests'][:3], 1):
-                    print(f"  {i}. {req}")
+                print(f"\nUser Requests ({len(session['user_requests'])}):")
+                for i, req in enumerate(session['user_requests'][:5], 1):
+                    timestamp = req['timestamp'][:19] if req['timestamp'] else 'Unknown'
+                    print(f"  {i}. [{timestamp}] {req['text']}")
             
-            if session['assistant_responses']:
-                print("Key Responses:")
-                for i, resp in enumerate(session['assistant_responses'][:2], 1):
-                    print(f"  {i}. {resp}")
+            if session['technical_work']:
+                print(f"\nTechnical Work ({len(session['technical_work'])}):")
+                for i, work in enumerate(session['technical_work'][:10], 1):
+                    timestamp = work['timestamp'][:19] if work['timestamp'] else 'Unknown'
+                    tools = f" (Tools: {', '.join(work['tools'])})" if work['tools'] else ""
+                    print(f"  {i}. [{timestamp}] {work['work']}{tools}")
+            
+            if session['file_modifications']:
+                print(f"\nFile Modifications ({len(session['file_modifications'])}):")
+                for i, mod in enumerate(session['file_modifications'][:10], 1):
+                    timestamp = mod['timestamp'][:19] if mod['timestamp'] else 'Unknown'
+                    tools = f" (Tools: {', '.join(mod['tools'])})" if mod['tools'] else ""
+                    print(f"  {i}. [{timestamp}] {mod['modification']}{tools}")
+            
             print("-" * 40)
 
 

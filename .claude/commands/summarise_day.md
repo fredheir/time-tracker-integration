@@ -2,26 +2,35 @@
 title: "Daily Work Analysis"
 description: "Comprehensive analysis of development work for a specific date"
 author: "Work Analytics Team"
-version: "1.0"
+version: "2.0"
 ---
 
 # Daily Work Summary Analysis
 
-Analyze development work patterns, achievements, and activities for **$ARGUMENTS** using multiple data sources and present comprehensive insights.
+Analyze development work patterns, achievements, and activities for **$ARGUMENTS** using multiple data sources and present comprehensive insights with **CONCRETE TECHNICAL ACHIEVEMENTS**.
 
 ## Phase 1: Data Collection & Time Tracking
 
-### 1.1 Run Time Tracker Analysis
-Execute the time tracker to collect session data:
+### 1.1 Run Dashboard Script for Fresh Data
+First, generate the most up-to-date analysis:
 
 ```bash
 cd /home/rolf/fuzzy-ops/tools/time-tracker-integration
-uv run src/time_tracker.py --start $ARGUMENTS --end $ARGUMENTS
+./dashboard.sh
+```
+
+**Expected Output**: Fresh time tracking data with comprehensive activity breakdown
+
+### 1.2 Run Targeted Time Tracker Analysis
+Execute the time tracker for the specific date:
+
+```bash
+uv run src/time_tracker.py --start "$ARGUMENTS" --end "$ARGUMENTS"
 ```
 
 **Expected Output**: CSV and JSON files with session data, project breakdowns, and service usage statistics
 
-### 1.2 Extract Claude Work Insights  
+### 1.3 Extract Claude Work Insights  
 Run the JSONL extraction script on all available Claude projects:
 
 ```bash
@@ -31,36 +40,48 @@ find ~/.claude/projects -name "*.jsonl" -newermt "$ARGUMENTS" ! -newermt "$(date
 # Extract insights from each relevant file
 for file in $(find ~/.claude/projects -name "*.jsonl" -newermt "$ARGUMENTS" ! -newermt "$(date -d "$ARGUMENTS + 1 day" +%Y-%m-%d)" | head -5); do
     echo "=== Analyzing: $file ==="
-    python extract_claude_work_insights.py "$file" $ARGUMENTS
+    python extract_claude_work_insights.py "$file" "$ARGUMENTS"
 done
 ```
 
 **Expected Output**: Detailed session analysis including:
 - Git branches worked on
 - Working directories 
-- Tool usage patterns
 - User requests and assistant responses
 - Token usage and interaction complexity
 
-### 1.3 Check Git Activity
+### 1.4 Check Git Activity Across All Repositories
 Examine git commit activity across key repositories:
 
 ```bash
-# Check fuzzy-ops repository
-cd /home/rolf/fuzzy-ops
-git log --oneline --since="$ARGUMENTS 00:00" --until="$ARGUMENTS 23:59" --author="$(git config user.name)"
+# Check current repository (time-tracker-integration)
+echo "=== Current Repository Git Activity ==="
+git log --oneline --since="$ARGUMENTS 00:00" --until="$ARGUMENTS 23:59" --pretty=format:"%h %ad %s" --date=short
+
+# Show detailed changes for each commit in current repo
+for commit in $(git log --since="$ARGUMENTS 00:00" --until="$ARGUMENTS 23:59" --pretty=format:"%h"); do
+    echo "=== Commit: $commit ==="
+    git show --stat $commit
+done
 
 # Check other key repositories if they exist
-for repo in ~/Projects/political_template ~/Projects/ai_augmentation; do
+for repo in ~/Projects/political_template ~/Projects/ai_augmentation ~/fuzzy-ops; do
     if [ -d "$repo/.git" ]; then
         echo "=== Git activity in $repo ==="
         cd "$repo"
-        git log --oneline --since="$ARGUMENTS 00:00" --until="$ARGUMENTS 23:59" --author="$(git config user.name)"
+        git log --oneline --since="$ARGUMENTS 00:00" --until="$ARGUMENTS 23:59" --author="$(git config user.name)" --pretty=format:"%h %ad %s" --date=short
+        
+        # Show detailed changes for each commit in this repo
+        for commit in $(git log --since="$ARGUMENTS 00:00" --until="$ARGUMENTS 23:59" --author="$(git config user.name)" --pretty=format:"%h"); do
+            echo "=== Commit in $repo: $commit ==="
+            git show --stat $commit
+        done
+        echo ""
     fi
 done
 ```
 
-**Expected Output**: List of commits with messages showing completed features, fixes, and improvements
+**Expected Output**: List of commits across all repositories with messages and detailed file change statistics
 
 ## Phase 2: Data Analysis Files to Examine
 
@@ -100,39 +121,54 @@ If available, examine:
 2. **Git commits** timing vs **time tracker** project focus
 3. **Claude tool usage** patterns vs **actual code changes**
 
-### 3.2 Structure Your Analysis Report
+### 3.2 Structure Your Analysis Report - FOCUS ON CONCRETE ACHIEVEMENTS
 
 #### **Executive Summary (2-3 sentences)**
 - Total productive hours tracked
-- Primary project focus
-- Major achievements completed
+- Primary project focus  
+- **SPECIFIC deliverables completed** (files created, features implemented, problems solved)
 
-#### **Project Breakdown** 
-For each project worked on:
+#### **Technical Achievements - CONCRETE DELIVERABLES**
+For each major accomplishment:
 ```
-**Project Name**: X hours, Y sessions
-- **Primary Activities**: [Based on Claude requests and git commits]
-- **Files Modified**: [Key files from git and Claude analysis]  
-- **Technical Focus**: [Architecture, features, debugging, etc.]
-- **Completion Status**: [Features completed, ongoing work]
+### [Achievement Name] (Commit: [hash])
+**Files Created/Modified**: [Exact files with line counts from git show --stat]
+- **[File 1]**: [Line count] - [Purpose/functionality]
+- **[File 2]**: [Line count] - [Purpose/functionality]
+
+**Key Features Implemented**:
+- [Specific functionality delivered]
+- [Architecture decisions made]
+- [Problems solved]
+
+**Technical Impact**: [Business value, system improvements, capabilities added]
+```
+
+#### **Claude Session Analysis - PROBLEM SOLVING DETAILS**
+For each significant Claude session:
+```
+#### Session [ID] ([X] interactions, [Y] tokens):
+- **Problem**: [Specific technical challenge from user requests]
+- **Action**: [What was actually done/built/fixed]
+- **Result**: [Concrete outcome achieved]
 ```
 
 #### **Development Workflow Analysis**
-- **Tool Integration**: How Claude, Cursor, and Git were used together
 - **Session Patterns**: Focused blocks vs scattered activity
 - **Problem-Solving Approach**: Research, implementation, testing patterns
+- **Context Switching**: Multi-project work and priority management
 
-#### **Key Achievements**
+#### **Key Business Outcomes**
 Based on git commits and Claude context:
-- **Features Completed**: Concrete functionality delivered
-- **Technical Improvements**: Refactoring, optimization, bug fixes
-- **Knowledge Work**: Research, analysis, planning activities
+1. **[Specific outcome 1]**: [Concrete deliverable with business impact]
+2. **[Specific outcome 2]**: [Concrete deliverable with business impact]  
+3. **[Specific outcome 3]**: [Concrete deliverable with business impact]
 
-#### **Technical Deep Dive**
-From Claude JSONL analysis:
-- **Complex Problem Solving**: High token usage sessions
-- **Code Quality Work**: Review, refactoring, standardization
-- **System Integration**: Multi-service/module work
+#### **Technical Deep Dive - SPECIFIC CODE CHANGES**
+From git commits and Claude analysis:
+- **Architecture Work**: [Specific systems built/modified]
+- **Configuration Changes**: [Exact config files modified and purpose]
+- **Code Quality**: [Specific refactoring, standards, reviews completed]
 
 ### 3.3 Presentation Guidelines
 
@@ -165,41 +201,76 @@ From Claude JSONL analysis:
 - Tool-assisted problem solving
 - Knowledge transfer between projects
 
-## Phase 4: Final Report Template
+## Phase 4: Final Report Template - DETAILED TECHNICAL FOCUS
 
 ```markdown
-# Daily Work Analysis: $ARGUMENTS
+# Daily Work Analysis: $ARGUMENTS - DETAILED TECHNICAL ACHIEVEMENTS
 
 ## Executive Summary
-[2-3 sentences on achievements and focus]
+**Total Tracked**: X.X hours of [primary focus area]. Delivered [specific deliverables] and resolved [specific technical challenges].
 
 ## Time Allocation
-- **Total Tracked**: X.X hours
-- **Primary Project**: [Project name] (X.X hours)
-- **Secondary Projects**: [List with hours]
+- **Primary Project**: [Project name] (X.X hours - [percentage]%)
+- **Secondary Projects**: [List with hours and specific work done]
 
-## Technical Achievements
-### [Project Name 1]
-- **Focus**: [Main technical area]
-- **Files Modified**: [Key files]
-- **Commits**: [Number and summary]
-- **Impact**: [Business/technical value]
+## Technical Achievements - CONCRETE DELIVERABLES
 
-### [Project Name 2]
-[Same structure]
+### 1. [Major Achievement Name] (Commit: [hash])
+**Files Created/Modified**: [Total lines] lines of new/modified code
+- **[File 1]**: [Line count]-line [description of functionality]
+- **[File 2]**: [Line count]-line [description of functionality]
 
-## Development Insights
-- **Tool Usage**: [Claude/Cursor/Git integration patterns]
-- **Problem-Solving**: [Approach and complexity]
-- **Code Quality**: [Refactoring, standards, reviews]
+**Key Features Implemented**:
+- [Specific functionality with technical details]
+- [Architecture decisions and rationale]
+- [Integration points and dependencies]
 
-## Key Outcomes
-1. [Specific achievement 1]
-2. [Specific achievement 2]
-3. [Specific achievement 3]
+**Technical Impact**: [Business value, system capabilities added, problems solved]
+
+### 2. [Second Achievement] (Commit: [hash])
+[Same detailed structure]
+
+## Claude Session Analysis - PROBLEM SOLVING DETAILS
+**Session Analysis from JSONL extraction**:
+
+#### Session 1 ([X] interactions, [Y] tokens):
+- **Problem**: [Exact technical challenge from user requests]
+- **Action**: [Specific code changes, files modified, solutions implemented]
+- **Result**: [Measurable outcome achieved]
+
+## Development Workflow Analysis
+- **Session Patterns**: [Time blocks, focus periods, context switching]
+- **Problem-Solving Approach**: [Research methodology, implementation strategy]
+- **Work Focus**: [Deep work vs context switching patterns]
+
+## Key Business Outcomes
+1. **[Specific deliverable 1]**: [Concrete functionality with business impact]
+2. **[Specific deliverable 2]**: [System improvement with measurable benefit]
+3. **[Specific deliverable 3]**: [Process enhancement with efficiency gain]
+
+## Technical Deep Dive - SPECIFIC CODE CHANGES
+**Configuration Management**: 
+- Modified [specific config files] with [exact changes made]
+- Updated [system components] for [specific improvements]
+
+**Code Architecture**:
+- Built [specific systems/modules] with [technical approach]
+- Implemented [specific algorithms/patterns] for [problem domain]
 
 ## Workflow Observations
-[Insights about productivity, tool effectiveness, areas for improvement]
+[Insights about productivity patterns, tool effectiveness, ROI of work completed]
+
+**ROI Analysis**: [How the work completed creates ongoing value]
 ```
 
-**Remember**: Focus on **what was achieved** and **business value delivered**, not just time spent or tools used.
+## CRITICAL REQUIREMENTS FOR ANALYSIS:
+
+1. **ALWAYS run `./dashboard.sh` first** for fresh data
+2. **Extract concrete details from git commits** using `git show --stat`
+3. **Analyze Claude JSONL sessions** for specific technical problems solved
+4. **Focus on deliverables, not just time spent**
+5. **Include exact file names, line counts, and technical changes**
+6. **Cross-reference git commits with Claude session activities**
+7. **Provide specific business/technical impact for each achievement**
+
+**Remember**: The goal is to document WHAT WAS BUILT/FIXED/DELIVERED with precise technical details, not just summarize time allocation.
