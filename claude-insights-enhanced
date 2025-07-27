@@ -1,0 +1,7 @@
+#!/bin/bash
+# Extract enhanced work descriptions from Claude sessions
+
+TIME_TRACKER_DIR="/home/rolf/fuzzy-ops/tools/time-tracker-integration"
+
+# Change to time-tracker directory and run with uv
+cd "$TIME_TRACKER_DIR" && uv run python extract_claude_work_insights_enhanced.py "$@"

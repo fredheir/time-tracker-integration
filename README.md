@@ -36,15 +36,30 @@ gh --version  # Should show gh version
 
 ### Basic Usage
 ```bash
-# Last 7 days (recommended for first run)
+# Using the wrapper script (if installed globally)
+time-tracker --days 7
+time-tracker --start 2025-06-19 --end 2025-06-23
+
+# Or using uv directly
 uv run src/time_tracker.py --days 7
-
-# Specific date range
 uv run src/time_tracker.py --start 2025-06-19 --end 2025-06-23
-
-# All available data
 uv run src/time_tracker.py
 ```
+
+### Enhanced Claude Session Analysis
+```bash
+# Find Claude sessions with gap detection and duration calculation
+./claude-sessions "2025-07-27"
+# Or globally: claude-sessions "yesterday"
+
+# Extract work insights from specific files
+./claude-insights /path/to/file.jsonl "2025-07-27"
+
+# Enhanced description extraction
+./claude-insights-enhanced
+```
+
+See [WRAPPER_SCRIPTS.md](WRAPPER_SCRIPTS.md) for installation instructions to use these commands globally.
 
 ### Generate Dashboard
 ```bash

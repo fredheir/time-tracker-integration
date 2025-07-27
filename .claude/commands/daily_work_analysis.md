@@ -15,7 +15,9 @@ Analyze development work patterns, achievements, and activities for a specified 
 ### 1.1 Run Time Tracker Analysis
 Execute the time tracker to collect session data:
 
-uv run /home/rolf/fuzzy-ops/tools/time-tracker-integration/src/time_tracker.py --start $DATE --end $DATE
+```bash
+time-tracker --start $DATE --end $DATE
+```
 
 **Expected Output**: CSV and JSON files with session data, project breakdowns, and service usage statistics
 
@@ -27,13 +29,15 @@ Run the enhanced JSONL analysis that provides complete work analysis with gap de
 # It automatically detects gaps, calculates accurate durations, and suggests Clockify entries
 
 # Run the enhanced analysis (combines all Claude sessions for the date)
-uv run find_claude_sessions_enhanced.py "$DATE" > claude_work_analysis.txt
+claude-sessions "$DATE" > claude_work_analysis.txt
 
 # Display the analysis
 cat claude_work_analysis.txt
 
 # Optional: If you need detailed insights from specific files, you can still run:
-# uv run extract_claude_work_insights.py "<specific_file>" "$DATE"
+# claude-insights "<specific_file>" "$DATE"
+# Or for enhanced descriptions:
+# claude-insights-enhanced
 ```
 
 **Expected Output**: Comprehensive analysis including:
@@ -51,7 +55,7 @@ Examine git commit activity across key repositories:
 
 ```bash
 # Check key repositories for commits
-for repo in /home/rolf/Projects/ml_classifier_core /home/rolf/Projects/ai_augmentation /home/rolf/Projects/political_template /home/rolf/fuzzy-ops; do
+for repo in /home/rolf/Projects/ai_augmentation /home/rolf/Projects/political_template /home/rolf/fuzzy-ops; do
     if [ -d "$repo/.git" ]; then
         echo "=== Git activity in $repo ==="
         git -C "$repo" log --pretty=format:"%h %ad %s" --date=iso --since="$DATE 00:00" --until="$DATE 23:59" --author="$(git config user.name)"
@@ -173,10 +177,6 @@ Suggested Clockify entries:
 - Created documentation for configuration
 - Git commit: def456 - "docs: add autostart troubleshooting guide"
 
-## Meetings & Calls (from calendar/gaps)
-### **10:30 - 10:45** (15m) - **Break**
-**Description:** "Short break between work blocks"
-
 ## **Total Time: Xh Ym**
 - Development: Xh Ym (from enhanced tool)
 - Meetings: Xh Ym
@@ -221,6 +221,11 @@ Suggested Clockify entries:
 - Multiple git commits in focused timeframes
 - Complex problem-solving with tool integration
 - Sustained development blocks (>2 hours)
+
+**Meeting Effectiveness**:
+- Clear outcomes and action items
+- Minimal development disruption
+- Follow-up development work alignment
 
 ## Success Metrics
 - **Accuracy**: Time blocks match actual work performed
